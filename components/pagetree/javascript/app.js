@@ -90,6 +90,7 @@ TYPO3.Components.PageTree.App = Ext.extend(Ext.Panel, {
 						fn: function() {
 							var treeContainer = Ext.getCmp(this.id + '-treeContainer');
 							Ext.getCmp(this.id + '-filteringTree').setSize(treeContainer.getSize());
+							Ext.getCmp(this.id + '-ageFilteringTree').setSize(treeContainer.getSize());
 							treeContainer.doLayout();
 						},
 						scope: this,
@@ -110,9 +111,22 @@ TYPO3.Components.PageTree.App = Ext.extend(Ext.Panel, {
 				app: this
 			}).hide();
 
+			var ageFilteringTree = new TYPO3.Components.PageTree.AgeFilteringTree({
+				id: this.id + '-ageFilteringTree',
+				deletionDropZoneId: this.id + '-deletionDropZone',
+				ddGroup: this.id,
+				autoScroll: true,
+				autoHeight: false,
+				commandProvider: TYPO3.Components.PageTree.Actions,
+				contextMenuProvider: TYPO3.Components.PageTree.ContextMenuDataProvider,
+				treeDataProvider: TYPO3.Components.PageTree.DataProvider,
+				app: this
+			}).hide();
+
 			var topPanel = new TYPO3.Components.PageTree.TopPanel({
 				dataProvider: TYPO3.Components.PageTree.DataProvider,
 				filteringTree: filteringTree,
+				ageFilteringTree: ageFilteringTree,
 				ddGroup: this.id,
 				tree: this.mainTree,
 				app: this
@@ -149,7 +163,7 @@ TYPO3.Components.PageTree.App = Ext.extend(Ext.Panel, {
 						id: this.id + '-treeContainer',
 						region: 'center',
 						layout: 'fit',
-						items: [this.mainTree, filteringTree]
+						items: [this.mainTree, filteringTree, ageFilteringTree]
 					},
 					deletionDropZone
 				]

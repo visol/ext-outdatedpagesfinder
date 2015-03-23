@@ -86,6 +86,13 @@ TYPO3.Components.PageTree.TopPanel = Ext.extend(Ext.Panel, {
 	filteringTree: null,
 
 	/**
+	 * Age Filtering Tree
+	 *
+	 * @cfg {TYPO3.Components.PageTree.AgeFilteringTree}
+	 */
+	ageFilteringTree: null,
+
+	/**
 	 * Page Tree
 	 *
 	 * @cfg {TYPO3.Components.PageTree.Tree}
@@ -119,6 +126,7 @@ TYPO3.Components.PageTree.TopPanel = Ext.extend(Ext.Panel, {
 			|| TYPO3.Components.PageTree.Configuration.hideFilter === '0'
 		) {
 			this.addFilterFeature();
+			this.addAgeFilterFeature();
 		}
 
 		this.getTopToolbar().addItem({xtype: 'tbfill'});
@@ -241,6 +249,51 @@ TYPO3.Components.PageTree.TopPanel = Ext.extend(Ext.Panel, {
 	},
 
 	/**
+	 * Loads the filtering tree nodes with the given search word
+	 *
+	 * @param {Ext.form.ComboBox} selectField
+	 * @return {void}
+	 */
+	createAgeFilterTree: function(selectField) {
+		this.ageFilteringTree.filterValue = selectField.getValue();
+		if (this.ageFilteringTree.filterValue === 0) {
+			this.app.activeTree = this.tree;
+
+			selectField.setHideTrigger(true);
+			this.ageFilteringTree.hide();
+			this.tree.show().refreshTree(function() {
+			}, this);
+
+			if (this.filteringIndicator) {
+				this.app.removeIndicator(this.filteringIndicator);
+				this.filteringIndicator = null;
+			}
+		} else {
+			var selectedNode = this.app.getSelected();
+			this.app.activeTree = this.ageFilteringTree;
+
+			if (!this.filteringIndicator) {
+				this.filteringIndicator = this.app.addIndicator(
+					this.createIndicatorItem(selectField)
+				);
+			}
+
+			selectField.setHideTrigger(false);
+			this.tree.hide();
+			this.app.ownerCt.getEl().mask('', 'x-mask-loading-message');
+			this.app.ownerCt.getEl().addClass('t3-mask-loading');
+			this.ageFilteringTree.show().refreshTree(function() {
+				if (selectedNode) {
+					this.app.select(selectedNode.attributes.nodeData.id, false);
+				}
+				this.app.ownerCt.getEl().unmask();
+			}, this);
+		}
+
+		this.doLayout();
+	},
+
+	/**
 	 * Adds an indicator item to the page tree application for the filtering feature
 	 *
 	 * @param {Ext.form.TextField} textField
@@ -343,6 +396,76 @@ TYPO3.Components.PageTree.TopPanel = Ext.extend(Ext.Panel, {
 					scope: this,
 					fn: function(panel) {
 						panel.get(this.id + '-filter').focus();
+					}
+				}
+			}
+		});
+
+		this.addButton(topPanelButton, topPanelWidget);
+	},
+
+	/**
+	 * Adds the necessary functionality and components for the filtering feature
+	 *
+	 * @return {void}
+	 */
+	addAgeFilterFeature: function() {
+		var topPanelButton = new Ext.Button({
+			id: this.id + '-button-ageFilter',
+			cls: this.id + '-button',
+			iconCls: TYPO3.Components.PageTree.Sprites.AgeFilter,
+			tooltip: TYPO3.Components.PageTree.LLL.ageFilter
+		});
+
+		var selectField = new Ext.form.ComboBox({
+			id: this.id + '-ageFilter',
+			width: 150,
+			lazyRender: true,
+			valueField: 'age',
+			displayField: 'label',
+			mode: 'local',
+			selectOnFocus: true,
+			triggerAction: 'all',
+			editable: false,
+			forceSelection: true,
+			store: new Ext.data.SimpleStore({
+				autoLoad: true,
+				fields: ['age','label'],
+				data : [
+					['0', TYPO3.Components.PageTree.LLL.ageFilterAll],
+					['3', TYPO3.Components.PageTree.LLL.ageFilter3],
+					['6', TYPO3.Components.PageTree.LLL.ageFilter6],
+					['9', TYPO3.Components.PageTree.LLL.ageFilter9],
+					['12', TYPO3.Components.PageTree.LLL.ageFilter12],
+				]
+			}),
+			value: 0,
+			listeners: {
+				'select': {
+					fn: this.createAgeFilterTree,
+					scope: this
+				}
+			}
+
+		});
+
+		//selectField.setHideTrigger(true);
+		//selectField.onTrigger = function() {
+		//	selectField.setValue(0);
+		//	this.createAgeFilterTree(selectField);
+		//}.createDelegate(this);
+
+		var topPanelWidget = new Ext.Panel({
+			border: false,
+			id: this.id + '-ageFilterWrap',
+			cls: this.id + '-item',
+			items: [selectField],
+
+			listeners: {
+				show: {
+					scope: this,
+					fn: function(panel) {
+						//panel.get(this.id + '-ageFilter').focus();
 					}
 				}
 			}

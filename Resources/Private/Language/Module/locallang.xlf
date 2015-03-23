@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2011-10-17T20:22:34Z" product-name="linkvalidator">
+		<header/>
+		<body>
+			<trans-unit id="tree.ageFilter" xml:space="preserve">
+				<source>Filter by age of pages</source>
+			</trans-unit>
+			<trans-unit id="tree.ageFilter.all" xml:space="preserve">
+				<source>All pages</source>
+			</trans-unit>
+			<trans-unit id="tree.ageFilter.3" xml:space="preserve">
+				<source>3 months old pages</source>
+			</trans-unit>
+			<trans-unit id="tree.ageFilter.6" xml:space="preserve">
+				<source>6 months old pages</source>
+			</trans-unit>
+			<trans-unit id="tree.ageFilter.9" xml:space="preserve">
+				<source>9 months old pages</source>
+			</trans-unit>
+			<trans-unit id="tree.ageFilter.12" xml:space="preserve">
+				<source>12 months old pages</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
