@@ -1,0 +1,10 @@
+#typo3-pagetree-topPanel-filterWrap .x-form-field-trigger-wrap {
+	width: 150px !important;
+	float: left;
+	position: relative;
+}
+
+#typo3-pagetree-topPanel-ageFilter + .x-form-trigger {
+	margin: 0;
+	display: inline-block;
+}
