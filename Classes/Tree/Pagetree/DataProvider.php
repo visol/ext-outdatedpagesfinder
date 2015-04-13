@@ -134,7 +134,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\Pagetree\DataProvider {
 					$text = $refNode->getText();
 					if ($isNumericSearchFilter && (int) $rootlineElement['uid'] === (int) $searchFilter) {
 						$text = str_replace('$1', $text, $replacement);
-					} elseif ($ageFilter > 0 && $rootlineElement['tstamp'] < $ageFilter) {
+					} elseif ($ageFilter > 0 && $rootlineElement['SYS_LASTCHANGED'] < $ageFilter) {
 						$text = str_replace('$1', $text, $replacement);
 					} elseif ($searchFilterQuoted !== '') {
 						$text = preg_replace('/(' . $searchFilterQuoted . ')/i', $replacement, $text);
@@ -241,7 +241,7 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\Pagetree\DataProvider {
 			}
 
 			if ($ageFilter > 0) {
-				$where .= ' AND tstamp < ' . $ageFilter;
+				$where .= ' AND SYS_LASTCHANGED < ' . $ageFilter;
 			}
 		}
 		return $where;
