@@ -241,6 +241,10 @@ class DataProvider extends \TYPO3\CMS\Backend\Tree\Pagetree\DataProvider {
 			}
 
 			if ($ageFilter > 0) {
+				// Hide doktypes that normally don't contain normal content
+				$where .= ' AND doktype NOT IN(3,4,6,7,199,254,255)';
+				// Hide hidden pages
+				$where .= ' AND NOT hidden ';
 				$where .= ' AND SYS_LASTCHANGED < ' . $ageFilter;
 			}
 		}
