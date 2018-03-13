@@ -1,5 +1,7 @@
 <?php
+
 namespace Visol\Outdatedpagesfinder\Hook;
+
 /***************************************************************
  *  Copyright notice
  *  (c) 2015 Lorenz Ulrich <lorenz.ulrich@visol.ch>
@@ -21,54 +23,57 @@ namespace Visol\Outdatedpagesfinder\Hook;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
-class DataHandler {
+class DataHandler
+{
 
-	/**
-	 * @param $status
-	 * @param $table
-	 * @param $id
-	 * @param array $fieldArray
-	 * @param $parentObject \TYPO3\CMS\Core\DataHandling\DataHandler
-	 */
-	public function processDatamap_afterDatabaseOperations($status, $table, $id, $fieldArray, $parentObject) {
-		if ($table === 'tt_content') {
-			if ($status === 'new') {
-				$parentPage = $fieldArray['pid'];
-				$this->updateSysLastchanged($parentPage);
-			} elseif (MathUtility::canBeInterpretedAsInteger($id)) {
-				$parentPage = BackendUtility::getRecord('tt_content', (int)$id, 'pid');
-				$this->updateSysLastchanged($parentPage['pid']);
-			}
-		}
-	}
+    /**
+     * @param $status
+     * @param $table
+     * @param $id
+     * @param array $fieldArray
+     * @param $parentObject \TYPO3\CMS\Core\DataHandling\DataHandler
+     */
+    public function processDatamap_afterDatabaseOperations($status, $table, $id, $fieldArray, $parentObject)
+    {
+        if ($table === 'tt_content') {
+            if ($status === 'new') {
+                $parentPage = $fieldArray['pid'];
+                $this->updateSysLastchanged($parentPage);
+            } elseif (MathUtility::canBeInterpretedAsInteger($id)) {
+                $parentPage = BackendUtility::getRecord('tt_content', (int)$id, 'pid');
+                $this->updateSysLastchanged($parentPage['pid']);
+            }
+        }
+    }
 
-	/**
-	 * @param string $command
-	 * @param string $table
-	 * @param int $id
-	 * @param string $value
-	 * @param $parentObject \TYPO3\CMS\Core\DataHandling\DataHandler
-	 */
-	public function processCmdmap_preProcess($command, &$table, $id, $value, $parentObject) {
-		if ($table === 'tt_content') {
-			if (MathUtility::canBeInterpretedAsInteger($id)) {
-				$parentPage = BackendUtility::getRecord('tt_content', (int)$id, 'pid');
-				$this->updateSysLastchanged($parentPage['pid']);
-			}
-		}
-	}
+    /**
+     * @param string $command
+     * @param string $table
+     * @param int $id
+     * @param string $value
+     * @param $parentObject \TYPO3\CMS\Core\DataHandling\DataHandler
+     */
+    public function processCmdmap_preProcess($command, &$table, $id, $value, $parentObject)
+    {
+        if ($table === 'tt_content') {
+            if (MathUtility::canBeInterpretedAsInteger($id)) {
+                $parentPage = BackendUtility::getRecord('tt_content', (int)$id, 'pid');
+                $this->updateSysLastchanged($parentPage['pid']);
+            }
+        }
+    }
 
-	/**
-	 * @param $pageUid
-	 */
-	protected function updateSysLastchanged($pageUid) {
-		/** @var \TYPO3\CMS\Core\Database\DatabaseConnection $databaseConnection */
-		$databaseConnection = $GLOBALS['TYPO3_DB'];
-		$databaseConnection->exec_UPDATEquery(
-			'pages',
-			'uid=' . (int)$pageUid,
-			array('SYS_LASTCHANGED' => time())
-		);
-	}
-
+    /**
+     * @param $pageUid
+     */
+    protected function updateSysLastchanged($pageUid)
+    {
+        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection $databaseConnection */
+        $databaseConnection = $GLOBALS['TYPO3_DB'];
+        $databaseConnection->exec_UPDATEquery(
+            'pages',
+            'uid=' . (int)$pageUid,
+            ['SYS_LASTCHANGED' => time()]
+        );
+    }
 }
