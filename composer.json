@@ -3,5 +3,5 @@
   "type": "typo3-cms-extension",
   "description": "Outdated Pages Finder",
   "homepage": "https://github.com/visol/ext-outdatedpagesfinder",
-  "license": ["GPL-2.0+"]
+  "license": ["GPL-2.0-or-later "]
 }
